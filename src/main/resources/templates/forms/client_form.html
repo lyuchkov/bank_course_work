@@ -23,8 +23,11 @@
     <div class="mb-3">
         <label for="email">Почта: </label> <input type="email" class="form-control" th:field="*{email} " placeholder="name@example.com" style="width: 13%;" id="email" required>
     </div>
+    <div class="form-floating">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Пароль до 30-ти символов" th:field="*{password} " required>
+        <label for="floatingPassword">Пароль</label>
+    </div>
     <div class="mb-3">
-
         <label for="phone">Телефон:</label>
         <div class="input-group has-validation" style="width: 13%;">
             <span class="input-group-text" id="inputGroupPrepend">+7</span>

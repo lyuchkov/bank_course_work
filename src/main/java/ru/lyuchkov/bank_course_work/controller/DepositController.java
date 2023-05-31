@@ -1,5 +1,6 @@
 package ru.lyuchkov.bank_course_work.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import ru.lyuchkov.bank_course_work.service.DepositService;
 
 @Controller
 @RequestMapping("/deposit")
+@PreAuthorize("hasRole('WORKER')")
 public class DepositController {
     private final DepositService service;
 

@@ -10,6 +10,26 @@ public class Client {
     boolean active = true;
     String accountName;
     int branchId;
+    String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Client(String name, String surname, String email, String phone, boolean active, String accountName, int branchId, String password) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.phone = phone;
+        this.active = active;
+        this.accountName = accountName;
+        this.branchId = branchId;
+        this.password = password;
+    }
 
     public String getAccountName() {
         return accountName;

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import ru.lyuchkov.bank_course_work.dao.AccountDao;
 import ru.lyuchkov.bank_course_work.dao.ClientDao;
+import ru.lyuchkov.bank_course_work.dao.UserDao;
 import ru.lyuchkov.bank_course_work.model.Client;
 
 import java.sql.SQLException;
@@ -14,10 +15,12 @@ import java.util.regex.Pattern;
 public class ClientService {
     final ClientDao clientDAO;
     private final AccountDao accountDao;
+    private final UserDao userDao;
 
-    public ClientService(ClientDao clientDAO, AccountDao accountDao) {
+    public ClientService(ClientDao clientDAO, AccountDao accountDao, UserDao userDao) {
         this.clientDAO = clientDAO;
         this.accountDao = accountDao;
+        this.userDao = userDao;
     }
 
     public List<Client> getAllClients() throws SQLException {
@@ -45,11 +48,17 @@ public class ClientService {
             model.addAttribute("error_message", "Некорректный формат почты.");
             return false;
         }
+        if(client.getPassword().length()>30){
+            model.addAttribute("error_message", "Слишком длинный пароль.");
+            return false;
+        }
         if(!isPhoneValid(phone)){
             model.addAttribute("error_message", "Некорректный формат номера.");
             return false;
         }
+
         try {
+            userDao.createUser(email, client.getPassword());
             clientDAO.createClient(name, surname, email, phone, client.getBranchId());
         } catch (SQLException e) {
             e.printStackTrace();

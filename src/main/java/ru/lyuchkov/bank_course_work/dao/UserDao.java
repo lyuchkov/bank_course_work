@@ -22,4 +22,13 @@ public class UserDao {
 
         stmt.executeUpdate();
     }
+    public int getAccountIdByEmail(String email) throws SQLException {
+        String sql = "select account_id from accounting.client where email = ?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1,email);
+
+        ResultSet resultSet = stmt.executeQuery();
+        resultSet.next();
+        return resultSet.getInt("account_id");
+    }
 }

@@ -68,15 +68,35 @@ public class DepositService {
                     "Нет активного депозита. ");
             return false;
         }
-        try {
-            depositDao.redeem(id);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            model.addAttribute("error_message",
-                    "Во время проведения операции произошла ошибка");
-            return false;
+        if(depositDao.getExpirationDate(id).before(new Date())){
+            try {
+                depositDao.redeem(id);
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                model.addAttribute("error_message",
+                        "Во время проведения операции произошла ошибка");
+                return false;
+            }
+        }else {
+            try {
+            depositDao.getBack(id);
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                model.addAttribute("error_message",
+                        "Во время проведения операции произошла ошибка");
+                return false;
+            }
         }
+
     }
 
+    public boolean isExistDepositWithAccountId(int id) {
+        return depositDao.isExistDepositWithId(id);
+    }
+
+    public Date getDeadlineById(int id) {
+        return depositDao.getExpirationDate(id);
+    }
 }

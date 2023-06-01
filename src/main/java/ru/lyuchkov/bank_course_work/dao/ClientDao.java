@@ -3,6 +3,7 @@ package ru.lyuchkov.bank_course_work.dao;
 import org.springframework.stereotype.Component;
 import ru.lyuchkov.bank_course_work.model.Client;
 import ru.lyuchkov.bank_course_work.service.ConnectionService;
+import ru.lyuchkov.bank_course_work.utils.DaoUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -78,5 +79,18 @@ public class ClientDao {
         }
 
         return list;
+    }
+
+    public boolean remove(Client client, int id) throws SQLException {
+        String sql = "delete from accounting.balance  where balance_id = (select balance_id from accounting.accounts where account_id = ?)";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setInt(1, id);
+        stmt.executeQuery();
+        return true;
+    }
+
+    public int getAccountId(int id) {
+        String sql = "select account_id from accounting.client  where accounting.client.client_id = ?";
+        return DaoUtils.getIntValueFromAnyTableByIdAndStatement(id, sql, connection);
     }
 }

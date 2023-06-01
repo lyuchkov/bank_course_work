@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Операция со счетом</title>
+    <title>Перевести деньги</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         input{
@@ -23,7 +23,7 @@
                     <a class="nav-link active" aria-current="page" th:href="@{/acc}">Cчёт</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page"  th:href="@{/acc/credit}">Кредит</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/acc/credit}">Кредит</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" th:href="@{/acc/deposit}">Депозит</a>
@@ -40,8 +40,18 @@
         </div>
     </div>
 </nav>
-<form style="padding: 40px;" >
-    <h3>Количество средств на счёте: <p th:text="${amount}"></p> </h3>
+<form style="padding: 40px;" th:action="@{/createtransfer}" th:object="${transfer}" method="post">
+    <div class="mb-3">
+        <label for="amount">Количество средств: </label> <input type="text" class="form-control"  th:field="*{amount}" id="amount" style="width: 25%; "  placeholder="500" min="1" max="1000000000" required></p>
+    </div>
+    <div class="mb-3">
+        <label for="phone">Номер телефона:</label>
+        <div class="input-group has-validation" style="width: 13%;">
+            <span class="input-group-text" id="inputGroupPrepend">+7</span>
+            <input type="tel" class="form-control" th:field="*{toNumber}" id="phone"  placeholder="9991234567" required>
+        </div>
+    </div>
+    <p><input type="submit" class="btn btn-primary" value="Произвести операцию" style="width: 300px;"/> </p>
     <p  th:if="${error_message != null}" th:text="${error_message}"></p>
 </form>
 </body>

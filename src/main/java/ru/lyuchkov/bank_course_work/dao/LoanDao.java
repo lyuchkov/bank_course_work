@@ -78,8 +78,8 @@ public class LoanDao {
                                     SET is_redeemed = true
                                     WHERE account_id = ?;
                     """;
-        PreparedStatement updStmt1 = connection.prepareStatement(updateSql);
-        updStmt.setInt(1, id);
+        PreparedStatement updStmt1 = connection.prepareStatement(updateSql1);
+        updStmt1.setInt(1, id);
         updStmt1.executeUpdate();
         return true;
     }
@@ -101,5 +101,18 @@ public class LoanDao {
     }
 
 
+    public java.util.Date getDeadlineById(int id) {
+        String sql = "select deadline from accounting.loan where account_id = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if(!rs.next())return null;
+            return new java.util.Date(rs.getDate(1).getTime());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
 

@@ -40,8 +40,10 @@ public class AccountDao {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1,accountId);
             ResultSet rs = stmt.executeQuery();
-            rs.next();
-            return amount>rs.getInt(1);
+            if(!rs.next()) return false;
+            int a = rs.getInt("value");
+            System.out.println(a);
+            return amount>a;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -57,5 +59,10 @@ public class AccountDao {
         String sql = "select exists(select * from accounting.client where email = ?)";
         return DaoUtils.isRowExistFromAnyTableByIdAndStatement(email, sql, connection);
 
+    }
+
+    public int getAmountForAccountWithId(int id){
+        String sql = "select value from accounting.balance where balance_id = (select balance_id from accounting.accounts where account_id = ?)";
+        return DaoUtils.getIntValueFromAnyTableByIdAndStatement(id, sql, connection);
     }
 }

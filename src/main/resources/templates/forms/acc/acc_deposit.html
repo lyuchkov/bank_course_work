@@ -23,7 +23,7 @@
                     <a class="nav-link active" aria-current="page" th:href="@{/acc}">Cчёт</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page"  th:href="@{/acc/credit}">Кредит</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/acc/loan}">Кредит</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" th:href="@{/acc/deposit}">Депозит</a>
@@ -40,8 +40,11 @@
         </div>
     </div>
 </nav>
-<form style="padding: 40px;" >
-    <h3>Количество средств на счёте: <p th:text="${amount}"></p> </h3>
+<h3 th:if="${deposit_exist} != 'true'" style="padding: 40px;" th:text="${error}">Заголовок</h3>
+<form style="padding: 40px;" th:action="@{/redeemdeposit}" method="post" th:if="${deposit_exist} == 'true'">
+    <h3>Выполнить возврат вклада</h3>
+    <p th:text="${deadline_message}"></p>
+    <p><input type="submit" class="btn btn-primary" value="Произвести операцию" style="width: 300px;"/> </p>
     <p  th:if="${error_message != null}" th:text="${error_message}"></p>
 </form>
 </body>

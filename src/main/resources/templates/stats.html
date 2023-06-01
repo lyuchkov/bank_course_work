@@ -44,24 +44,51 @@
         </div>
     </div>
 </nav>
-<div class="mb-3" style="margin: 40px;">
-    <a th:href="@{/branch/new}">Зарегистрировать новое отделение</a>
-</div>
-<table class="table" style="margin: 40px; width: 60%;">
+<h4 style="margin: 40px;">Список всех просроченных кредитов по отделениям банка</h4>
+<table class="table" style="margin: 40px; width: 20%;">
     <thead>
-    <th scope="col">id</th>
-    <th scope="col">address</th>
-    <th scope="col">phone</th>
+    <th scope="col">Адрес</th>
+    <th scope="col">Количество</th>
     </thead>
     <tbody>
-    <tr  th:if="${ #lists.isEmpty(clientList)}">
-        <td colspan="2"> Нет доступных отделений банка</td>
+    <tr  th:if="${ #maps.isEmpty(loanMap)}">
+        <td colspan="2"> Нет данных</td>
     </tr>
-    <tr th:each="client : ${clientList}">
-        <td><span th:text="${client.id}" > id </span></td>
-        <td><span th:text="${client.address}"> adrerss </span></td>
-        <td><span th:text="${client.phone}"> phone </span></td>
-
+    <tr th:each="ex_loan : ${loanMap}">
+        <td><span th:text="${ex_loan.key}" > address </span></td>
+        <td><span th:text="${ex_loan.value}"> value </span></td>
+    </tr>
+    </tbody>
+</table>
+<h4 style="margin: 40px;">Список всех погашенных кредитов по отделениям банка</h4>
+<table class="table" style="margin: 40px; width: 20%;">
+    <thead>
+    <th scope="col">Адрес</th>
+    <th scope="col">Количество</th>
+    </thead>
+    <tbody>
+    <tr  th:if="${ #maps.isEmpty(loanMapRed)}">
+        <td colspan="2"> Нет данных</td>
+    </tr>
+    <tr th:each="red_loan : ${loanMapRed}">
+        <td><span th:text="${red_loan.key}" > address </span></td>
+        <td><span th:text="${red_loan.value}"> value </span></td>
+    </tr>
+    </tbody>
+</table>
+<h4 style="margin: 40px;"> Список всех погашенных депозитов по отделениям банка</h4>
+<table class="table" style="margin: 40px; width: 20%;">
+    <thead>
+    <th scope="col">Адрес</th>
+    <th scope="col">Количество</th>
+    </thead>
+    <tbody>
+    <tr  th:if="${ #maps.isEmpty(depositMap)}">
+        <td colspan="2"> Нет данных</td>
+    </tr>
+    <tr th:each="deposit : ${depositMap}">
+        <td><span th:text="${deposit.key}" > address </span></td>
+        <td><span th:text="${deposit.value}"> value </span></td>
     </tr>
     </tbody>
 </table>

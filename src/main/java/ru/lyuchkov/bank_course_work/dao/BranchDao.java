@@ -20,8 +20,8 @@ public class BranchDao {
 
 
     public void createBranch(String address, String phone) throws SQLException {
-        Statement stmt = stmt = connection.createStatement();
-        ResultSet resultSet = stmt.executeQuery(
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(
                 "insert into accounting.bank_branch(address, " +
                         "phone) " +
                         "VALUES ('" + address + "','" + phone+ "');");

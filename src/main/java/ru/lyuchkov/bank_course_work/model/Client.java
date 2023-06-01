@@ -1,7 +1,7 @@
 package ru.lyuchkov.bank_course_work.model;
 
 public class Client {
-    private int id;
+    int id;
     String name;
     String surname;
     String email;

@@ -2,9 +2,7 @@ package ru.lyuchkov.bank_course_work.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import ru.lyuchkov.bank_course_work.dao.AccountDao;
-import ru.lyuchkov.bank_course_work.dao.ClientDao;
-import ru.lyuchkov.bank_course_work.dao.UserDao;
+import ru.lyuchkov.bank_course_work.dao.*;
 import ru.lyuchkov.bank_course_work.model.Client;
 
 import java.sql.SQLException;
@@ -16,11 +14,16 @@ public class ClientService {
     final ClientDao clientDAO;
     private final AccountDao accountDao;
     private final UserDao userDao;
+    private final LoanDao loanDao;
+    private final DepositDao depositDao;
 
-    public ClientService(ClientDao clientDAO, AccountDao accountDao, UserDao userDao) {
+
+    public ClientService(ClientDao clientDAO, AccountDao accountDao, UserDao userDao, LoanDao loanDao, DepositDao depositDao) {
         this.clientDAO = clientDAO;
         this.accountDao = accountDao;
         this.userDao = userDao;
+        this.loanDao = loanDao;
+        this.depositDao = depositDao;
     }
 
     public List<Client> getAllClients() throws SQLException {
@@ -114,5 +117,31 @@ public class ClientService {
             model.addAttribute( "error_message",e.getMessage());
             return false;
         }
+    }
+
+    public boolean deleteClient(Client client, Model model, int id) {
+        if(depositDao.isExistDepositWithId(id)){
+            model.addAttribute("error_message", "У клиента есть не закрытый вклад.");
+            return false;
+        }
+        if(loanDao.isExistWithId(id)){
+            model.addAttribute("error_message", "У клиента есть не закрытый кредит.");
+            return false;
+        }
+        if(!accountDao.isAccountAmountLessThan(id,1)){
+            model.addAttribute("error_message", "У клиента не сняты средства со счета.");
+            return false;
+        }
+        try {
+            clientDAO.remove(client, id);
+            return true;
+        } catch (SQLException e) {
+            model.addAttribute( "error_message",e.getMessage());
+            return false;
+        }
+    }
+
+    public int getAccountIdByClientId(int id) {
+        return clientDAO.getAccountId(id);
     }
 }

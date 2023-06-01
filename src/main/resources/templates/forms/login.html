@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8">
     <title>Вход</title>
@@ -15,6 +15,9 @@
   <div class="mb-3">
     <label for="password">Пароль:</label>  <input name="password" type="password" class="form-control"  id="password" style="width: 10%;"   required>
   </div>
+  <div class="mb-3">
+    <a th:href="@{/client/new}">Зарегистрироваться</a>
+    </div>
   <p><input type="submit" class="btn btn-primary" value="Войти" style="width: 150px;"/></p>
   <div th:if="${param.error}">
     Некорекктные логин и/или пароль.

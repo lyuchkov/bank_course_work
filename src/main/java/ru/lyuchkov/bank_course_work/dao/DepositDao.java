@@ -51,18 +51,21 @@ public class DepositDao {
                 SET value = balance.value + ?
                 WHERE balance_id = (select balance_id from accounting.accounts where account_id = ?);""";
         PreparedStatement updStmt = connection.prepareStatement(updateSql);
-        updStmt.setInt(1, getDepositAmountByAccountId(id) * ((getPercentByAccountId(id) / 100) + 1));
+        int p = getPercentByAccountId(id);
+        double m = ((double) p / 100) + 1;
+        double i = (int) getDepositAmountByAccountId(id) * m;
+        updStmt.setInt(1, (int)i);
         updStmt.setInt(2, id);
 
         updStmt.executeUpdate();
 
         String updateSql1 = """
-                UPDATE accounting.percent
+                UPDATE accounting.deposit
                                     SET is_redeemed = true
                                     WHERE account_id = ?;
                     """;
-        PreparedStatement updStmt1 = connection.prepareStatement(updateSql);
-        updStmt.setInt(1, id);
+        PreparedStatement updStmt1 = connection.prepareStatement(updateSql1);
+        updStmt1.setInt(1, id);
         updStmt1.executeUpdate();
         return true;
     }
@@ -75,5 +78,42 @@ public class DepositDao {
     private int getPercentByAccountId(int id) {
         String sql = "select percent from accounting.deposit where account_id = ?";
         return DaoUtils.getIntValueFromAnyTableByIdAndStatement(id, sql, connection);
+    }
+
+    public java.util.Date getExpirationDate(int id) {
+        String sql = "select until_date from accounting.deposit where account_id = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if(!rs.next())return null;
+            java.util.Date date = new java.util.Date(rs.getDate(1).getTime());
+            return date;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean getBack(int id) throws SQLException {
+        String updateSql = """
+                UPDATE accounting.balance
+                SET value = balance.value + ?
+                WHERE balance_id = (select balance_id from accounting.accounts where account_id = ?);""";
+        PreparedStatement updStmt = connection.prepareStatement(updateSql);
+        updStmt.setInt(1, getDepositAmountByAccountId(id));
+        updStmt.setInt(2, id);
+
+        updStmt.executeUpdate();
+
+        String updateSql1 = """
+                UPDATE accounting.deposit
+                                    SET is_redeemed = true
+                                    WHERE account_id = ?;
+                    """;
+        PreparedStatement updStmt1 = connection.prepareStatement(updateSql1);
+        updStmt1.setInt(1, id);
+        updStmt1.executeUpdate();
+        return true;
     }
 }

@@ -9,6 +9,8 @@ import ru.lyuchkov.bank_course_work.model.AtmOperation;
 import ru.lyuchkov.bank_course_work.model.Loan;
 import ru.lyuchkov.bank_course_work.service.LoanService;
 
+import java.sql.SQLException;
+
 @Controller
 @RequestMapping("/loan")
 @PreAuthorize("hasRole('WORKER')")
@@ -33,5 +35,10 @@ public class LoanController {
             redirectAttributes.addAttribute("error_message", model.getAttribute("error_message"));
             return "redirect:/loan/new";
         }
+    }
+    @GetMapping("/expired")
+    public String getExpiredLoans(Model model, @RequestParam(required = false) String error_message){
+        model.addAttribute("clientList", service.getAllClientsWithExpiredLoan(model));
+        return "clients.html";
     }
 }

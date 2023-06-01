@@ -1,5 +1,6 @@
 package ru.lyuchkov.bank_course_work.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +27,10 @@ public class ClientController {
 
 
     @GetMapping("/all")
-    public String getAll(Model model) {
+    @PreAuthorize("hasRole('WORKER')")
+    public String getAll(Model model, @RequestParam(required = false) String error_message) {
         try {
+            model.addAttribute("error_message", error_message);
             model.addAttribute("clientList", service.getAllClients());
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -51,6 +54,7 @@ public class ClientController {
         }
     }
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasRole('WORKER')")
     public String editClientWithId(Model model, @PathVariable int id, @RequestParam(required = false) String error_message){
         model.addAttribute("error_message", error_message);
         model.addAttribute("id", id);
@@ -60,11 +64,29 @@ public class ClientController {
 
 
     @PatchMapping("/edit/{id}")
+    @PreAuthorize("hasRole('WORKER')")
     public String alterUserWithId(@ModelAttribute Client client, Model model, RedirectAttributes redirectAttributes, @PathVariable int id){
         if (service.updateClient(client, model, id)) return "redirect:/client/all";
         else {
             redirectAttributes.addAttribute("error_message", model.getAttribute("error_message"));
             return "redirect:/client/edit/"+id;
+        }
+    }
+    @GetMapping("/delete/{id}")
+    @PreAuthorize("hasRole('WORKER')")
+    public String getDeleteForm(Model model, @PathVariable int id, @RequestParam(required = false) String error_message){
+        model.addAttribute("error_message", error_message);
+        model.addAttribute("id", id);
+        model.addAttribute("client", service.getClientWithId(id, model));
+        return "./forms/client_delete.html";
+    }
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('WORKER')")
+    public String deleteClientWithId(@ModelAttribute Client client, Model model, RedirectAttributes redirectAttributes, @PathVariable int id){
+        if (service.deleteClient(client, model, service.getAccountIdByClientId(id))) return "redirect:/client/all";
+        else {
+            redirectAttributes.addAttribute("error_message", model.getAttribute("error_message"));
+            return "redirect:/client/all";
         }
     }
 }

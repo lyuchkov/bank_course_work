@@ -53,7 +53,7 @@ public class TransferDao {
                 WHERE balance_id = (select balance_id from accounting.accounts where account_id = ?); \s""";
         PreparedStatement stmtTo = connection.prepareStatement(sqlUpdateValueTo);
         stmtTo.setInt(1, transfer.getAmount());
-        stmtTo.setInt(2, transfer.getAccountFromId());
+        stmtTo.setInt(2, transfer.getAccountToId());
 
         stmt.executeUpdate();
         stmtFrom.executeUpdate();

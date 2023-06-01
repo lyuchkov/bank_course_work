@@ -96,6 +96,12 @@ public class LoanService {
            return new ArrayList<>();
        }
    }
-    //todo check if is expire or get all expired
+   public boolean isExistLoanWithAccountId(int id){
+        return loanDao.isExistWithId(id);
+   }
 
+
+    public Date getDeadlineById(int id) {
+        return loanDao.getDeadlineById(id);
+    }
 }
